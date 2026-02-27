@@ -42,7 +42,6 @@ class GRRenderer {
   draw(player) {
     const { ctx, blockSize, world, textures, canvas } = this;
 
-    // Camera centers on the player
     const cameraX = player.x * blockSize - canvas.width / 2;
     const cameraY = player.y * blockSize - canvas.height / 2;
 
@@ -65,7 +64,6 @@ class GRRenderer {
       }
     }
 
-    // Draw the player as a simple square for now
     ctx.fillStyle = "red";
     ctx.fillRect(
       canvas.width / 2 - blockSize / 2,
@@ -81,7 +79,18 @@ class GRPlayer {
     this.x = 10;
     this.y = 10;
     this.speed = 0.1;
+
+    this.vx = 0;
+    this.vy = 0;
+    this.gravity = 0.01;
+    this.jumpForce = -0.25;
+    this.grounded = false;
   }
+}
+
+function isSolid(world, x, y) {
+  if (x < 0 || y < 0 || x >= world.width || y >= world.height) return true;
+  return world.blocks[x][y] !== "air";
 }
 
 const keys = {};
@@ -94,30 +103,51 @@ window.addEventListener("load", () => {
   const renderer = new GRRenderer(canvas, world);
   const player = new GRPlayer();
 
-  // Block breaking & placing
   canvas.addEventListener("mousedown", e => {
     const rect = canvas.getBoundingClientRect();
     const x = Math.floor((e.clientX - rect.left) / renderer.blockSize);
     const y = Math.floor((e.clientY - rect.top) / renderer.blockSize);
 
     if (e.button === 0) {
-      world.blocks[x][y] = "air"; // break
+      world.blocks[x][y] = "air";
     } else if (e.button === 2) {
-      world.blocks[x][y] = "grass"; // place
+      world.blocks[x][y] = "grass";
     }
   });
 
-  // Disable right-click menu
   window.addEventListener("contextmenu", e => e.preventDefault());
 
-  // Game loop
   function update() {
-    if (keys["ArrowLeft"]) player.x -= player.speed;
-    if (keys["ArrowRight"]) player.x += player.speed;
-    if (keys["ArrowUp"]) player.y -= player.speed;
-    if (keys["ArrowDown"]) player.y += player.speed;
+    if (keys["ArrowLeft"]) player.vx = -player.speed;
+    else if (keys["ArrowRight"]) player.vx = player.speed;
+    else player.vx = 0;
 
-    renderer.draw(player); // IMPORTANT FIX
+    if (keys[" "] && player.grounded) {
+      player.vy = player.jumpForce;
+      player.grounded = false;
+    }
+
+    player.vy += player.gravity;
+
+    let nextX = player.x + player.vx;
+    let nextY = player.y + player.vy;
+
+    if (!isSolid(world, Math.floor(nextX), Math.floor(player.y))) {
+      player.x = nextX;
+    }
+
+    if (!isSolid(world, Math.floor(player.x), Math.floor(nextY))) {
+      player.y = nextY;
+      player.grounded = false;
+    } else {
+      if (player.vy > 0) {
+        player.y = Math.floor(player.y);
+        player.grounded = true;
+      }
+      player.vy = 0;
+    }
+
+    renderer.draw(player);
     requestAnimationFrame(update);
   }
 
