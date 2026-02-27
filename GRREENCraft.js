@@ -41,4 +41,68 @@ class GRRenderer {
 
   draw() {
     const { ctx, blockSize, world, textures } = this;
-    ctx.clearRect(0, 0, this.canvas
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    for (let x = 0; x < world.width; x++) {
+      for (let y = 0; y < world.height; y++) {
+        const block = world.blocks[x][y];
+        const tex = textures[block];
+
+        if (tex && tex.complete) {
+          ctx.drawImage(tex, x * blockSize, y * blockSize, blockSize, blockSize);
+        } else {
+          ctx.fillStyle = block === "grass" ? "#3cb043" : "#87ceeb";
+          ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
+        }
+      }
+    }
+  }
+}
+
+class GRPlayer {
+  constructor() {
+    this.x = 10;
+    this.y = 10;
+    this.speed = 0.1;
+  }
+}
+
+const keys = {};
+window.addEventListener("keydown", e => keys[e.key] = true);
+window.addEventListener("keyup", e => keys[e.key] = false);
+
+window.addEventListener("load", () => {
+  const canvas = document.getElementById("game");
+  const world = new GRWorld(40, 30);
+  const renderer = new GRRenderer(canvas, world);
+  const player = new GRPlayer();
+
+  // Block breaking & placing
+  canvas.addEventListener("mousedown", e => {
+    const rect = canvas.getBoundingClientRect();
+    const x = Math.floor((e.clientX - rect.left) / renderer.blockSize);
+    const y = Math.floor((e.clientY - rect.top) / renderer.blockSize);
+
+    if (e.button === 0) {
+      world.blocks[x][y] = "air"; // break
+    } else if (e.button === 2) {
+      world.blocks[x][y] = "grass"; // place
+    }
+  });
+
+  // Disable right-click menu
+  window.addEventListener("contextmenu", e => e.preventDefault());
+
+  // Game loop
+  function update() {
+    if (keys["ArrowLeft"]) player.x -= player.speed;
+    if (keys["ArrowRight"]) player.x += player.speed;
+    if (keys["ArrowUp"]) player.y -= player.speed;
+    if (keys["ArrowDown"]) player.y += player.speed;
+
+    renderer.draw();
+    requestAnimationFrame(update);
+  }
+
+  update();
+});
