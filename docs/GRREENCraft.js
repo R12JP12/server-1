@@ -5,17 +5,39 @@ class GRWorld {
   constructor(width, height) {
     this.width = width;
     this.height = height;
-    this.blocks = this.createFlatWorld();
+    this.blocks = this.generateTerrain();
   }
 
-  createFlatWorld() {
+  generateTerrain() {
     const blocks = [];
+
+    const baseHeight = Math.floor(this.height * 0.5);
+    const amplitude = 6;
+    const smoothness = 20;
+
     for (let x = 0; x < this.width; x++) {
       blocks[x] = [];
+
+      const height =
+        baseHeight +
+        Math.floor(
+          Math.sin(x / smoothness) * amplitude +
+          Math.sin(x / (smoothness * 0.5)) * (amplitude * 0.5)
+        );
+
       for (let y = 0; y < this.height; y++) {
-        blocks[x][y] = y > this.height / 2 ? "air" : "grass";
+        if (y < height) {
+          blocks[x][y] = "air";
+        } else if (y === height) {
+          blocks[x][y] = "grass";
+        } else if (y < height + 3) {
+          blocks[x][y] = "dirt";
+        } else {
+          blocks[x][y] = "stone";
+        }
       }
     }
+
     return blocks;
   }
 }
@@ -29,6 +51,8 @@ class GRRenderer {
 
     this.textures = {
       grass: this.loadTexture("textures/grass.png"),
+      dirt: this.loadTexture("textures/dirt.png"),
+      stone: this.loadTexture("textures/stone.png"),
       air: this.loadTexture("textures/air.png")
     };
   }
@@ -58,7 +82,11 @@ class GRRenderer {
         if (tex && tex.complete) {
           ctx.drawImage(tex, screenX, screenY, blockSize, blockSize);
         } else {
-          ctx.fillStyle = block === "grass" ? "#3cb043" : "#87ceeb";
+          if (block === "grass") ctx.fillStyle = "#3cb043";
+          else if (block === "dirt") ctx.fillStyle = "#8b4513";
+          else if (block === "stone") ctx.fillStyle = "#777777";
+          else ctx.fillStyle = "#87ceeb";
+
           ctx.fillRect(screenX, screenY, blockSize, blockSize);
         }
       }
@@ -99,20 +127,19 @@ window.addEventListener("keyup", e => keys[e.key] = false);
 
 window.addEventListener("load", () => {
   const canvas = document.getElementById("game");
-  const world = new GRWorld(40, 30);
+  const world = new GRWorld(80, 60);
   const renderer = new GRRenderer(canvas, world);
   const player = new GRPlayer();
 
   canvas.addEventListener("mousedown", e => {
     const rect = canvas.getBoundingClientRect();
-    const x = Math.floor((e.clientX - rect.left) / renderer.blockSize);
-    const y = Math.floor((e.clientY - rect.top) / renderer.blockSize);
+    const x = Math.floor((e.clientX - rect.left) / renderer.blockSize + player.x - (canvas.width / 2) / renderer.blockSize);
+    const y = Math.floor((e.clientY - rect.top) / renderer.blockSize + player.y - (canvas.height / 2) / renderer.blockSize);
 
-    if (e.button === 0) {
-      world.blocks[x][y] = "air";
-    } else if (e.button === 2) {
-      world.blocks[x][y] = "grass";
-    }
+    if (x < 0 || y < 0 || x >= world.width || y >= world.height) return;
+
+    if (e.button === 0) world.blocks[x][y] = "air";
+    else if (e.button === 2) world.blocks[x][y] = "grass";
   });
 
   window.addEventListener("contextmenu", e => e.preventDefault());
