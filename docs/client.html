@@ -2,29 +2,10 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Play GRREENCraft 1.8.8</title>
-  <script>
-    // Auto-connect to your server
-    const DEFAULT_SERVER = "wss://YOUR_WSS_URL_HERE/";
-
-    window.onload = () => {
-      // Inject server into localStorage so the client loads it automatically
-      localStorage.setItem("eaglercraftX.serverList", JSON.stringify([
-        {
-          name: "RomeCraft SMP",
-          address: DEFAULT_SERVER
-        }
-      ]));
-
-      // Auto-connect
-      localStorage.setItem("eaglercraftX.autoConnect", DEFAULT_SERVER);
-    };
-  </script>
+  <title>GRREENCraft</title>
 </head>
-<body style="margin:0; background:orange;">
-
-<!-- Load the actual Eaglercraft client -->
-<script src="eaglercraftX.js"></script>
-
+<body>
+  <canvas id="game" width="640" height="480"></canvas>
+  <script src="grreencraft.js"></script>
 </body>
 </html>
