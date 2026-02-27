@@ -26,17 +26,34 @@ class GRRenderer {
     this.ctx = canvas.getContext("2d");
     this.world = world;
     this.blockSize = 16;
+
+    this.textures = {
+      grass: this.loadTexture("textures/grass.png"),
+      air: this.loadTexture("textures/air.png")
+    };
+  }
+
+  loadTexture(src) {
+    const img = new Image();
+    img.src = src;
+    return img;
   }
 
   draw() {
-    const { ctx, blockSize, world } = this;
+    const { ctx, blockSize, world, textures } = this;
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
     for (let x = 0; x < world.width; x++) {
       for (let y = 0; y < world.height; y++) {
         const block = world.blocks[x][y];
-        if (block === "grass") ctx.fillStyle = "#3cb043";
-        else ctx.fillStyle = "#87ceeb"; // air/sky
-        ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
+        const tex = textures[block];
+
+        if (tex && tex.complete) {
+          ctx.drawImage(tex, x * blockSize, y * blockSize, blockSize, blockSize);
+        } else {
+          ctx.fillStyle = block === "grass" ? "#3cb043" : "#87ceeb";
+          ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
+        }
       }
     }
   }
