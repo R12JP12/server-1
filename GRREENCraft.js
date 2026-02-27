@@ -39,25 +39,42 @@ class GRRenderer {
     return img;
   }
 
-  draw() {
-    const { ctx, blockSize, world, textures } = this;
-    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  draw(player) {
+  const { ctx, blockSize, world, textures, canvas } = this;
 
-    for (let x = 0; x < world.width; x++) {
-      for (let y = 0; y < world.height; y++) {
-        const block = world.blocks[x][y];
-        const tex = textures[block];
+  // Camera centers on the player
+  const cameraX = player.x * blockSize - canvas.width / 2;
+  const cameraY = player.y * blockSize - canvas.height / 2;
 
-        if (tex && tex.complete) {
-          ctx.drawImage(tex, x * blockSize, y * blockSize, blockSize, blockSize);
-        } else {
-          ctx.fillStyle = block === "grass" ? "#3cb043" : "#87ceeb";
-          ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
-        }
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (let x = 0; x < world.width; x++) {
+    for (let y = 0; y < world.height; y++) {
+      const block = world.blocks[x][y];
+      const tex = textures[block];
+
+      const screenX = x * blockSize - cameraX;
+      const screenY = y * blockSize - cameraY;
+
+      if (tex && tex.complete) {
+        ctx.drawImage(tex, screenX, screenY, blockSize, blockSize);
+      } else {
+        ctx.fillStyle = block === "grass" ? "#3cb043" : "#87ceeb";
+        ctx.fillRect(screenX, screenY, blockSize, blockSize);
       }
     }
   }
+
+  // Draw the player as a simple square for now
+  ctx.fillStyle = "red";
+  ctx.fillRect(
+    canvas.width / 2 - blockSize / 2,
+    canvas.height / 2 - blockSize / 2,
+    blockSize,
+    blockSize
+  );
 }
+
 
 class GRPlayer {
   constructor() {
