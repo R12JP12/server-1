@@ -40,41 +40,41 @@ class GRRenderer {
   }
 
   draw(player) {
-  const { ctx, blockSize, world, textures, canvas } = this;
+    const { ctx, blockSize, world, textures, canvas } = this;
 
-  // Camera centers on the player
-  const cameraX = player.x * blockSize - canvas.width / 2;
-  const cameraY = player.y * blockSize - canvas.height / 2;
+    // Camera centers on the player
+    const cameraX = player.x * blockSize - canvas.width / 2;
+    const cameraY = player.y * blockSize - canvas.height / 2;
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  for (let x = 0; x < world.width; x++) {
-    for (let y = 0; y < world.height; y++) {
-      const block = world.blocks[x][y];
-      const tex = textures[block];
+    for (let x = 0; x < world.width; x++) {
+      for (let y = 0; y < world.height; y++) {
+        const block = world.blocks[x][y];
+        const tex = textures[block];
 
-      const screenX = x * blockSize - cameraX;
-      const screenY = y * blockSize - cameraY;
+        const screenX = x * blockSize - cameraX;
+        const screenY = y * blockSize - cameraY;
 
-      if (tex && tex.complete) {
-        ctx.drawImage(tex, screenX, screenY, blockSize, blockSize);
-      } else {
-        ctx.fillStyle = block === "grass" ? "#3cb043" : "#87ceeb";
-        ctx.fillRect(screenX, screenY, blockSize, blockSize);
+        if (tex && tex.complete) {
+          ctx.drawImage(tex, screenX, screenY, blockSize, blockSize);
+        } else {
+          ctx.fillStyle = block === "grass" ? "#3cb043" : "#87ceeb";
+          ctx.fillRect(screenX, screenY, blockSize, blockSize);
+        }
       }
     }
+
+    // Draw the player as a simple square for now
+    ctx.fillStyle = "red";
+    ctx.fillRect(
+      canvas.width / 2 - blockSize / 2,
+      canvas.height / 2 - blockSize / 2,
+      blockSize,
+      blockSize
+    );
   }
-
-  // Draw the player as a simple square for now
-  ctx.fillStyle = "red";
-  ctx.fillRect(
-    canvas.width / 2 - blockSize / 2,
-    canvas.height / 2 - blockSize / 2,
-    blockSize,
-    blockSize
-  );
 }
-
 
 class GRPlayer {
   constructor() {
@@ -117,7 +117,7 @@ window.addEventListener("load", () => {
     if (keys["ArrowUp"]) player.y -= player.speed;
     if (keys["ArrowDown"]) player.y += player.speed;
 
-    renderer.draw();
+    renderer.draw(player); // IMPORTANT FIX
     requestAnimationFrame(update);
   }
 
