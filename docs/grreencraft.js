@@ -1,5 +1,6 @@
 // GRREENCraft prototype engine
 // Original code by R12JP12
+
 function resizeCanvas(canvas) {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -18,7 +19,6 @@ class GRWorld {
     const baseHeight = Math.floor(this.height * 0.5);
     const amplitude = 6;
     const smoothness = 20;
-
     const biomeSize = 20;
 
     for (let x = 0; x < this.width; x++) {
@@ -43,15 +43,10 @@ class GRWorld {
       for (let y = 0; y < this.height; y++) {
         let block = "air";
 
-        if (y < height) {
-          block = "air";
-        } else if (y === height) {
-          block = biome === "desert" ? "sand" : "grass";
-        } else if (y < height + 3) {
-          block = biome === "desert" ? "sand" : "dirt";
-        } else {
-          block = "stone";
-        }
+        if (y < height) block = "air";
+        else if (y === height) block = biome === "desert" ? "sand" : "grass";
+        else if (y < height + 3) block = biome === "desert" ? "sand" : "dirt";
+        else block = "stone";
 
         blocks[x][y] = block;
       }
@@ -96,7 +91,6 @@ class GRWorld {
     for (let i = 0; i < shaftCount; i++) {
       const startX = Math.floor(Math.random() * (this.width - 20)) + 10;
       const startY = Math.floor(Math.random() * (this.height - 20)) + 15;
-
       const length = Math.floor(Math.random() * 25) + 15;
 
       for (let x = startX; x < startX + length && x < this.width - 1; x++) {
@@ -104,9 +98,7 @@ class GRWorld {
 
         for (let dy = -1; dy <= 1; dy++) {
           const ny = y + dy;
-          if (ny >= 0 && ny < this.height) {
-            blocks[x][ny] = "air";
-          }
+          if (ny >= 0 && ny < this.height) blocks[x][ny] = "air";
         }
 
         if (y + 2 < this.height) blocks[x][y + 2] = "planks";
@@ -130,10 +122,7 @@ class GRWorld {
       }
       if (surfaceY === -1) continue;
 
-      const blockBelow = blocks[x][surfaceY];
-      const biomeIsForestOrPlains = blockBelow === "grass";
-
-      if (!biomeIsForestOrPlains) continue;
+      if (blocks[x][surfaceY] !== "grass") continue;
 
       if (Math.random() < 0.12) {
         this.placeTree(blocks, x, surfaceY - 1);
@@ -160,13 +149,11 @@ class GRWorld {
           nx >= 0 &&
           ny >= 0 &&
           nx < this.width &&
-          ny < this.height
+          ny < this.height &&
+          Math.abs(dx) + Math.abs(dy) < leafRadius + 1 &&
+          blocks[nx][ny] === "air"
         ) {
-          if (Math.abs(dx) + Math.abs(dy) < leafRadius + 1) {
-            if (blocks[nx][ny] === "air") {
-              blocks[nx][ny] = "leaves";
-            }
-          }
+          blocks[nx][ny] = "leaves";
         }
       }
     }
@@ -202,14 +189,10 @@ class GRRenderer {
   draw(player) {
     const { ctx, blockSize, world, textures, canvas } = this;
 
-    // SKY
+    // SKY (non-repeating)
     const skyTex = textures.sky;
     if (skyTex && skyTex.complete) {
-      for (let x = 0; x < canvas.width; x += blockSize) {
-        for (let y = 0; y < canvas.height; y += blockSize) {
-          ctx.drawImage(skyTex, 0, 0, canvas.width, canvas.height);
-        }
-      }
+      ctx.drawImage(skyTex, 0, 0, canvas.width, canvas.height);
     } else {
       ctx.fillStyle = "#87ceeb";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -261,7 +244,6 @@ class GRPlayer {
     this.x = 10;
     this.y = 10;
     this.speed = 0.1;
-
     this.vx = 0;
     this.vy = 0;
     this.gravity = 0.01;
@@ -283,17 +265,12 @@ window.addEventListener("keyup", e => keys[e.key] = false);
 window.addEventListener("load", () => {
   const canvas = document.getElementById("game");
 
-  // Make the canvas fill the screen
   resizeCanvas(canvas);
   window.addEventListener("resize", () => resizeCanvas(canvas));
 
-  const world = new GRWorld(200, 120); 
+  const world = new GRWorld(200, 120);
   const renderer = new GRRenderer(canvas, world);
   const player = new GRPlayer();
-
-  // ...rest of your code...
-});
-
 
   canvas.addEventListener("mousedown", e => {
     const rect = canvas.getBoundingClientRect();
@@ -312,11 +289,8 @@ window.addEventListener("load", () => {
       worldY >= world.height
     ) return;
 
-    if (e.button === 0) {
-      world.blocks[worldX][worldY] = "air";
-    } else if (e.button === 2) {
-      world.blocks[worldX][worldY] = "grass";
-    }
+    if (e.button === 0) world.blocks[worldX][worldY] = "air";
+    else if (e.button === 2) world.blocks[worldX][worldY] = "grass";
   });
 
   window.addEventListener("contextmenu", e => e.preventDefault());
