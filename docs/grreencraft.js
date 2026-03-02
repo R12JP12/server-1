@@ -203,7 +203,7 @@ class GRRenderer {
     if (skyTex && skyTex.complete) {
       for (let x = 0; x < canvas.width; x += blockSize) {
         for (let y = 0; y < canvas.height; y += blockSize) {
-          ctx.drawImage(skyTex, x, y, blockSize, blockSize);
+          ctx.drawImage(skyTex, 0, 0, canvas.width, canvas.height);
         }
       }
     } else {
