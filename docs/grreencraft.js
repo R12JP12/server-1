@@ -242,7 +242,7 @@ class GRRenderer {
     }
 
     // PLAYER
-    ctx.fillStyle = "red";
+    ctx.fillStyle = "blue";
     ctx.fillRect(
       canvas.width / 2 - blockSize / 2,
       canvas.height / 2 - blockSize / 2,
