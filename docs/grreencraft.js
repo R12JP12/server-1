@@ -220,6 +220,67 @@ class GRRenderer {
   }
 
   draw(player) {
+    const { ctx, blockSize, world, textures, canvas } = this;
+
+    // Draw sky background
+    const skyTex = textures.sky;
+    if (skyTex && skyTex.complete) {
+      for (let x = 0; x < canvas.width; x += blockSize) {
+        for (let y = 0; y < canvas.height; y += blockSize) {
+          ctx.drawImage(skyTex, x, y, blockSize, blockSize);
+        }
+      }
+    } else {
+      ctx.fillStyle = "#87ceeb";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    const cameraX = player.x * blockSize - canvas.width / 2;
+    const cameraY = player.y * blockSize - canvas.height / 2;
+
+    for (let x = 0; x < world.width; x++) {
+      for (let y = 0; y < world.height; y++) {
+        const block = world.blocks[x][y];
+        const tex = textures[block];
+
+        const screenX = x * blockSize - cameraX;
+        const screenY = y * blockSize - cameraY;
+
+        if (tex && tex.complete) {
+          ctx.drawImage(tex, screenX, screenY, blockSize, blockSize);
+        } else {
+          if (block === "grass") ctx.fillStyle = "#3cb043";
+          else if (block === "dirt") ctx.fillStyle = "#8b4513";
+          else if (block === "stone") ctx.fillStyle = "#777777";
+          else if (block === "sand") ctx.fillStyle = "#d9c27f";
+          else if (block === "leaves") ctx.fillStyle = "#2e8b57";
+          else if (block === "log") ctx.fillStyle = "#5b3a1a";
+          else if (block === "planks") ctx.fillStyle = "#b58a5a";
+          else ctx.fillStyle = "#87ceeb";
+
+          ctx.fillRect(screenX, screenY, blockSize, blockSize);
+        }
+      }
+    }
+
+    // Draw player (still red square)
+    ctx.fillStyle = "red";
+    ctx.fillRect(
+      canvas.width / 2 - blockSize / 2,
+      canvas.height / 2 - blockSize / 2,
+      blockSize,
+      blockSize
+    );
+  }
+}
+
+  loadTexture(src) {
+    const img = new Image();
+    img.src = src;
+    return img;
+  }
+
+  draw(player) {
   const { ctx, blockSize, world, textures, canvas } = this;
 
   // Draw sky background
