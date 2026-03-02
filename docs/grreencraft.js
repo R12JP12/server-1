@@ -208,8 +208,8 @@ class GRRenderer {
       leaves: this.loadTexture("textures/leaves.png"),
       log: this.loadTexture("textures/log.png"),
       planks: this.loadTexture("textures/planks.png"),
-      air: this.loadTexture("textures/air.png")
-      sky: this.loadTexture("textures/sky.png"),
+      air: this.loadTexture("textures/air.png"),
+      sky: this.loadTexture("textures/sky.png")
     };
   }
 
