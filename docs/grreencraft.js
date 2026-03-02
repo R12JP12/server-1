@@ -201,6 +201,7 @@ class GRRenderer {
     this.blockSize = 16;
 
     this.textures = {
+      sky: this.loadTexture("textures/sky.png")
       grass: this.loadTexture("textures/grass.png"),
       dirt: this.loadTexture("textures/dirt.png"),
       stone: this.loadTexture("textures/stone.png"),
@@ -208,8 +209,7 @@ class GRRenderer {
       leaves: this.loadTexture("textures/leaves.png"),
       log: this.loadTexture("textures/log.png"),
       planks: this.loadTexture("textures/planks.png"),
-      air: this.loadTexture("textures/air.png"),
-      sky: this.loadTexture("textures/sky.png")
+      air: this.loadTexture("textures/air.png")
     };
   }
 
