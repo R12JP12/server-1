@@ -15,20 +15,17 @@ class GRWorld {
     const amplitude = 6;
     const smoothness = 20;
 
-    // Biome settings
-    const biomeSize = 20; // width in blocks per biome segment
+    const biomeSize = 20;
 
     for (let x = 0; x < this.width; x++) {
       blocks[x] = [];
 
-      // Pick biome based on x
       const biomeIndex = Math.floor(x / biomeSize) % 4;
       let biome = "plains";
       if (biomeIndex === 1) biome = "forest";
       else if (biomeIndex === 2) biome = "desert";
       else if (biomeIndex === 3) biome = "mountains";
 
-      // Base terrain height with some variation
       let height =
         baseHeight +
         Math.floor(
@@ -36,12 +33,8 @@ class GRWorld {
           Math.sin(x / (smoothness * 0.5)) * (amplitude * 0.5)
         );
 
-      // Biome-specific height tweaks
-      if (biome === "mountains") {
-        height -= 4;
-      } else if (biome === "desert") {
-        height += 2;
-      }
+      if (biome === "mountains") height -= 4;
+      else if (biome === "desert") height += 2;
 
       for (let y = 0; y < this.height; y++) {
         let block = "air";
@@ -49,11 +42,9 @@ class GRWorld {
         if (y < height) {
           block = "air";
         } else if (y === height) {
-          if (biome === "desert") block = "sand";
-          else block = "grass";
+          block = biome === "desert" ? "sand" : "grass";
         } else if (y < height + 3) {
-          if (biome === "desert") block = "sand";
-          else block = "dirt";
+          block = biome === "desert" ? "sand" : "dirt";
         } else {
           block = "stone";
         }
@@ -62,13 +53,8 @@ class GRWorld {
       }
     }
 
-    // Add caves
     this.generateCaves(blocks);
-
-    // Add mineshafts
     this.generateMineshafts(blocks);
-
-    // Add trees
     this.generateTrees(blocks);
 
     return blocks;
@@ -80,7 +66,6 @@ class GRWorld {
     for (let x = 0; x < this.width; x++) {
       for (let y = 10; y < this.height; y++) {
         if (Math.random() < caveChance && blocks[x][y] === "stone") {
-          // Carve a small blob
           for (let dx = -1; dx <= 1; dx++) {
             for (let dy = -1; dy <= 1; dy++) {
               const nx = x + dx;
@@ -113,7 +98,6 @@ class GRWorld {
       for (let x = startX; x < startX + length && x < this.width - 1; x++) {
         const y = startY;
 
-        // Carve tunnel
         for (let dy = -1; dy <= 1; dy++) {
           const ny = y + dy;
           if (ny >= 0 && ny < this.height) {
@@ -121,12 +105,8 @@ class GRWorld {
           }
         }
 
-        // Floor planks
-        if (y + 2 < this.height) {
-          blocks[x][y + 2] = "planks";
-        }
+        if (y + 2 < this.height) blocks[x][y + 2] = "planks";
 
-        // Supports every 4 blocks
         if ((x - startX) % 4 === 0) {
           if (y + 1 < this.height) blocks[x][y + 1] = "log";
           if (y - 1 >= 0) blocks[x][y - 1] = "log";
@@ -137,13 +117,9 @@ class GRWorld {
 
   generateTrees(blocks) {
     for (let x = 2; x < this.width - 2; x++) {
-      // Find surface
       let surfaceY = -1;
       for (let y = 0; y < this.height; y++) {
-        if (
-          blocks[x][y] === "grass" ||
-          blocks[x][y] === "sand"
-        ) {
+        if (blocks[x][y] === "grass" || blocks[x][y] === "sand") {
           surfaceY = y;
           break;
         }
@@ -222,7 +198,7 @@ class GRRenderer {
   draw(player) {
     const { ctx, blockSize, world, textures, canvas } = this;
 
-    // Draw sky background
+    // SKY
     const skyTex = textures.sky;
     if (skyTex && skyTex.complete) {
       for (let x = 0; x < canvas.width; x += blockSize) {
@@ -238,7 +214,7 @@ class GRRenderer {
     const cameraX = player.x * blockSize - canvas.width / 2;
     const cameraY = player.y * blockSize - canvas.height / 2;
 
-    // Draw world blocks
+    // WORLD
     for (let x = 0; x < world.width; x++) {
       for (let y = 0; y < world.height; y++) {
         const block = world.blocks[x][y];
@@ -250,69 +226,22 @@ class GRRenderer {
         if (tex && tex.complete) {
           ctx.drawImage(tex, screenX, screenY, blockSize, blockSize);
         } else {
-          if (block === "grass") ctx.fillStyle = "#3cb043";
-          else if (block === "dirt") ctx.fillStyle = "#8b4513";
-          else if (block === "stone") ctx.fillStyle = "#777777";
-          else if (block === "sand") ctx.fillStyle = "#d9c27f";
-          else if (block === "leaves") ctx.fillStyle = "#2e8b57";
-          else if (block === "log") ctx.fillStyle = "#5b3a1a";
-          else if (block === "planks") ctx.fillStyle = "#b58a5a";
-          else ctx.fillStyle = "#87ceeb";
+          ctx.fillStyle =
+            block === "grass" ? "#3cb043" :
+            block === "dirt" ? "#8b4513" :
+            block === "stone" ? "#777777" :
+            block === "sand" ? "#d9c27f" :
+            block === "leaves" ? "#2e8b57" :
+            block === "log" ? "#5b3a1a" :
+            block === "planks" ? "#b58a5a" :
+            "#87ceeb";
 
           ctx.fillRect(screenX, screenY, blockSize, blockSize);
         }
       }
     }
 
-    // Draw player (still red square)
-    ctx.fillStyle = "red";
-    ctx.fillRect(
-      canvas.width / 2 - blockSize / 2,
-      canvas.height / 2 - blockSize / 2,
-      blockSize,
-      blockSize
-    );
-  }
-}
-
-  }
-} else {
-  ctx.fillStyle = "#87ceeb"; // fallback sky blue
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-}
-
-    const { ctx, blockSize, world, textures, canvas } = this;
-
-    const cameraX = player.x * blockSize - canvas.width / 2;
-    const cameraY = player.y * blockSize - canvas.height / 2;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    for (let x = 0; x < world.width; x++) {
-      for (let y = 0; y < world.height; y++) {
-        const block = world.blocks[x][y];
-        const tex = textures[block];
-
-        const screenX = x * blockSize - cameraX;
-        const screenY = y * blockSize - cameraY;
-
-        if (tex && tex.complete) {
-          ctx.drawImage(tex, screenX, screenY, blockSize, blockSize);
-        } else {
-          if (block === "grass") ctx.fillStyle = "#3cb043";
-          else if (block === "dirt") ctx.fillStyle = "#8b4513";
-          else if (block === "stone") ctx.fillStyle = "#777777";
-          else if (block === "sand") ctx.fillStyle = "#d9c27f";
-          else if (block === "leaves") ctx.fillStyle = "#2e8b57";
-          else if (block === "log") ctx.fillStyle = "#5b3a1a";
-          else if (block === "planks") ctx.fillStyle = "#b58a5a";
-          else ctx.fillStyle = "#87ceeb";
-
-          ctx.fillRect(screenX, screenY, blockSize, blockSize);
-        }
-      }
-    }
-
+    // PLAYER
     ctx.fillStyle = "red";
     ctx.fillRect(
       canvas.width / 2 - blockSize / 2,
