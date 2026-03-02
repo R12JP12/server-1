@@ -165,7 +165,7 @@ class GRRenderer {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
     this.world = world;
-    this.blockSize = 16;
+    this.blockSize = 32;
 
     this.textures = {
       sky: this.loadTexture("textures/sky.png"),
