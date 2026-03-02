@@ -220,6 +220,20 @@ class GRRenderer {
   }
 
   draw(player) {
+    // Draw sky background
+const skyTex = textures.sky;
+if (skyTex && skyTex.complete) {
+  // Tile the sky across the whole screen
+  for (let x = 0; x < canvas.width; x += blockSize) {
+    for (let y = 0; y < canvas.height; y += blockSize) {
+      ctx.drawImage(skyTex, x, y, blockSize, blockSize);
+    }
+  }
+} else {
+  ctx.fillStyle = "#87ceeb"; // fallback sky blue
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
     const { ctx, blockSize, world, textures, canvas } = this;
 
     const cameraX = player.x * blockSize - canvas.width / 2;
