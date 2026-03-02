@@ -3,9 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <title>GRREENCraft</title>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden; /* no scrollbars */
+      background: #000; /* optional: black behind canvas */
+    }
+
+    #game {
+      width: 100vw;   /* fill screen horizontally */
+      height: 100vh;  /* fill screen vertically */
+      display: block; /* removes inline spacing */
+    }
+  </style>
 </head>
+
 <body>
-  <canvas id="game" width="640" height="480"></canvas>
+  <canvas id="game"></canvas>
   <script src="grreencraft.js"></script>
 </body>
 </html>
