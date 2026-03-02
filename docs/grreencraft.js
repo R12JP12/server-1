@@ -1,5 +1,9 @@
 // GRREENCraft prototype engine
 // Original code by R12JP12
+function resizeCanvas(canvas) {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
 
 class GRWorld {
   constructor(width, height) {
@@ -278,9 +282,18 @@ window.addEventListener("keyup", e => keys[e.key] = false);
 
 window.addEventListener("load", () => {
   const canvas = document.getElementById("game");
-  const world = new GRWorld(80, 60);
+
+  // Make the canvas fill the screen
+  resizeCanvas(canvas);
+  window.addEventListener("resize", () => resizeCanvas(canvas));
+
+  const world = new GRWorld(200, 120); 
   const renderer = new GRRenderer(canvas, world);
   const player = new GRPlayer();
+
+  // ...rest of your code...
+});
+
 
   canvas.addEventListener("mousedown", e => {
     const rect = canvas.getBoundingClientRect();
