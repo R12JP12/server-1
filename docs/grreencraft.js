@@ -18,7 +18,7 @@ class GRWorld {
 
     const baseHeight = Math.floor(this.height * 0.5);
     const amplitude = 6;
-    const smoothness = 20;
+    const smoothness = 5;
     const biomeSize = 20;
 
     for (let x = 0; x < this.width; x++) {
@@ -60,7 +60,7 @@ class GRWorld {
   }
 
   generateCaves(blocks) {
-    const caveChance = 0.08;
+    const caveChance = 0.02;
 
     for (let x = 0; x < this.width; x++) {
       for (let y = 10; y < this.height; y++) {
@@ -86,7 +86,7 @@ class GRWorld {
   }
 
   generateMineshafts(blocks) {
-    const shaftCount = 3;
+    const shaftCount = 2;
 
     for (let i = 0; i < shaftCount; i++) {
       const startX = Math.floor(Math.random() * (this.width - 20)) + 10;
