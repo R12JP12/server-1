@@ -163,7 +163,7 @@ class GRWorld {
 class GRRenderer {
   constructor(canvas, world) {
     this.canvas = canvas;
-    this.ctx = canvas.getContext("2d");
+    this.ctx = canvas.getContext("3d");
     this.world = world;
     this.blockSize = 32;
 
