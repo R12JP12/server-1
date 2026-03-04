@@ -169,6 +169,7 @@ class GRRenderer {
 
     this.textures = {
       sky: this.loadTexture("textures/sky.png"),
+      player: this.loadTexture("textures/player.png"),
       grass: this.loadTexture("textures/grass.png"),
       dirt: this.loadTexture("textures/dirt.png"),
       stone: this.loadTexture("textures/stone.png"),
@@ -229,7 +230,7 @@ class GRRenderer {
     }
 
     // PLAYER
-    ctx.fillStyle = "blue";
+    this.load.Texture = "player";
     ctx.fillRect(
       canvas.width / 2 - blockSize / 2,
       canvas.height / 2 - blockSize / 2,
