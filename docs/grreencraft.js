@@ -169,7 +169,6 @@ class GRRenderer {
 
     this.textures = {
       sky: this.loadTexture("textures/sky.png"),
-      player: this.loadTexture("textures/player.png"),
       grass: this.loadTexture("textures/grass.png"),
       dirt: this.loadTexture("textures/dirt.png"),
       stone: this.loadTexture("textures/stone.png"),
@@ -177,7 +176,8 @@ class GRRenderer {
       leaves: this.loadTexture("textures/leaves.png"),
       log: this.loadTexture("textures/log.png"),
       planks: this.loadTexture("textures/planks.png"),
-      air: this.loadTexture("textures/air.png")
+      air: this.loadTexture("textures/air.png"),
+      player: this.loadTexture("textures/player.png")
     };
   }
 
@@ -230,13 +230,26 @@ class GRRenderer {
     }
 
     // PLAYER
-    ctx.fillstyle(green);
-    ctx.fillRect(
-      canvas.width / 2 - blockSize / 2,
-      canvas.height / 2 - blockSize / 2,
-      blockSize,
-      blockSize
-    );
+    const ptex = textures.player;
+
+if (ptex && ptex.complete) {
+  ctx.drawImage(
+    ptex,
+    canvas.width / 2 - blockSize / 2,
+    canvas.height / 4 - blockSize / 4,
+    blockSize,
+    blockSize
+  );
+} else {
+  ctx.fillStyle = "green";
+  ctx.fillRect(
+    canvas.width / 2 - blockSize / 2,
+    canvas.height / 2 - blockSize / 2,
+    blockSize,
+    blockSize
+  );
+}
+
   }
 }
 
