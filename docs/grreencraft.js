@@ -256,7 +256,7 @@ if (ptex && ptex.complete) {
 class GRPlayer {
   constructor() {
     this.x = 10;
-    this.y = 10;
+    this.y = 20;
     this.speed = 0.1;
     this.vx = 0;
     this.vy = 0;
