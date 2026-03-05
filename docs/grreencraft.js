@@ -235,16 +235,16 @@ class GRRenderer {
 if (ptex && ptex.complete) {
   ctx.drawImage(
     ptex,
-    canvas.width / 2 - blockSize / 2,
-    canvas.height / 4 - blockSize / 4,
+    canvas.width / 1 - blockSize / 1,
+    canvas.height / 2 - blockSize / 2,
     blockSize,
     blockSize
   );
 } else {
   ctx.fillStyle = "green";
   ctx.fillRect(
-    canvas.width / 2 - blockSize / 2,
-    canvas.height / 4 - blockSize / 4,
+    canvas.width / 1 - blockSize / 1,
+    canvas.height / 2 - blockSize / 2,
     blockSize,
     blockSize
   );
