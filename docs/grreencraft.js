@@ -236,7 +236,7 @@ if (ptex && ptex.complete) {
   ctx.drawImage(
     ptex,
     canvas.width / 2 - blockSize / 2,
-    canvas.height / 4 - blockSize / 4,
+    canvas.height / 2 - blockSize / 2,
     blockSize,
     blockSize
   );
@@ -244,7 +244,7 @@ if (ptex && ptex.complete) {
   ctx.fillStyle = "green";
   ctx.fillRect(
     canvas.width / 2 - blockSize / 2,
-    canvas.height / 4 - blockSize / 4,
+    canvas.height / 2 - blockSize / 2,
     blockSize,
     blockSize
   );
