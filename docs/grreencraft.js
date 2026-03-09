@@ -256,7 +256,7 @@ if (ptex && ptex.complete) {
 class GRPlayer {
   constructor() {
     this.x = 10;
-    this.y = 10;
+    this.y = 20;
     this.speed = 0.1;
 
     this.vx = 0;
@@ -265,8 +265,8 @@ class GRPlayer {
     this.jumpForce = -0.25;
     this.grounded = false;
 
-    this.width = 8 / 8;  // scaled to block units
-    this.height = 16 / 16; // scaled to block units
+    this.width = 16 / 16;  // scaled to block units
+    this.height = 32 / 32; // scaled to block units
   }
 }
 
