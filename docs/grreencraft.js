@@ -259,8 +259,8 @@ class GRPlayer {
     this.jumpForce = -0.25;
     this.grounded = false;
 
-    this.width = 32 / 96;  // scaled to block units
-    this.height = 64 / 96; // scaled to block units
+    this.width = 32 / 48;  // scaled to block units
+    this.height = 64 / 48; // scaled to block units
   }
 }
 
@@ -332,7 +332,7 @@ if (!isSolid(world, Math.floor(player.x), Math.floor(nextY)) &&
     !isSolid(world, Math.floor(player.x + player.width), Math.floor(nextY))) {
 
       player.y = nextY;
-      player.grounded = true;
+      player.grounded = false;
     } else {
       if (player.vy > 0) {
         player.y = Math.floor(player.y);
